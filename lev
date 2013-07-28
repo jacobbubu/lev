@@ -141,7 +141,7 @@ if (argv.port) {
 	}
     })
     
-    (argv.host) {
+    if(argv.host) {
         host = argv.host
     }
 

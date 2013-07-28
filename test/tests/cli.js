@@ -1,4 +1,4 @@
-/ar spawn = require('child_process').spawn;
+var spawn = require('child_process').spawn;
 var path = require('path');
 var levelup = require('level');
 var p = path.join(__dirname, '..', 'fixtures', 'db');
