@@ -1,4 +1,4 @@
-var spawn = require('child_process').spawn;
+/ar spawn = require('child_process').spawn;
 var path = require('path');
 var levelup = require('level');
 var p = path.join(__dirname, '..', 'fixtures', 'db');
@@ -27,7 +27,7 @@ var defaultargs = ['--format', 'false', '--encoding', 'utf8'];
 
 module.exports = {
   'Test Usage message on no args':
-  function(test,next){
+  function(test,next) {
     
     test.plan(2)
     var test_cp1 = spawn(lev, []);
@@ -36,14 +36,14 @@ module.exports = {
     test_cp1.stderr.on('data', function (data) {
         var isOk = false;
 
-        if(data.toString().indexOf("Usage") == 1){
+        if(data.toString().indexOf('Usage') == 1) {
            isOk = true;   
         }
      
-       if(data.toString().indexOf("Argument") == 0){
+       if(data.toString().indexOf('Argument') == 0) {
           isOk = true;
        }		
-       test.ok(isOk, "Message has expected start")
+       test.ok(isOk, 'Message has expected start')
            
     });
 
@@ -82,13 +82,13 @@ module.exports = {
 
         db.get(test_key1, function (err, value) {
           if (err) { return test.fail(err); }
-          test.equals(test_value1, value, "Value stored and retrieved as expected");
+          test.equals(test_value1, value, 'Value stored and retrieved as expected');
           db.close();
           next();
         });
       });
     });
-  },
+   },
 
    'put to specific location without -c (Verbose)': 
    function(test, next) {
@@ -109,8 +109,7 @@ module.exports = {
 
      test_cp1.on('exit', function (data) {
 	
-     //	test.ok(false, "path params fail", "#TODO params need debugging");
-       test.equals(test_output1, OK, "Output validated");
+       test.equals(test_output1, OK, 'Output validated');
        levelup(p, options, function (err, db) {
       
          if (err) { return test.fail(err); }
@@ -118,13 +117,14 @@ module.exports = {
          db.get(test_key2, function (err, value) {
           
            if (err) { return test.fail(err); }
-           test.equals(test_value2, value, "Insert Validated" );
+           test.equals(test_value2, value, 'Insert Validated' );
            db.close();
            next();
          });
        });
      });
    },
+   
    'put from within the current working dir': 
    function(test, next) {
 
@@ -141,26 +141,27 @@ module.exports = {
 
      test_cp3.stdout.on('data', function (data) {
        test_output3 += data;
-   });
+     });
 
      test_cp3.on('exit', function (data) {
 
-       test.equals(test_output3, OK);
+        test.equals(test_output3, OK);
 
-       levelup(p, options, function (err, db) {
+        levelup(p, options, function (err, db) {
         
-         if (err) { return test.fail(err); }
-
-         db.get(test_key3, function (err, value) {
+          if (err) { return test.fail(err); }
+       
+                db.get(test_key3, function (err, value) {
           
-           if (err) { return test.fail(err); }
-           test.equals(test_value3, value);
-           db.close();
-           next();
-         });
-       });
-     });
- },
+                   if (err) { return test.fail(err); }
+                      test.equals(test_value3, value);
+                      db.close();
+                      next();
+                });
+        });
+      });
+   },
+   
    'put from within the current working dir (Verbose)': 
    function(test, next) {
 
@@ -226,15 +227,17 @@ module.exports = {
          db.get(test_key5, function (err, value) {
 
            if (err) { return test.fail(err); }
+           
            test.equals(value.toString(), test_value5);
            db.close();
            next();
+         
          });
        });
      });
    },
 
-  'get from specific location': 
+   'get from specific location': 
    function(test, next) {
 
      test.plan(1);
@@ -277,8 +280,7 @@ module.exports = {
 
      test_cp2.on('exit', function (data) {
   
-	  //    process.exit()
-       test.equals(test_output2,  '"' + test_value2 + '"\r\n' );
+     test.equals(test_output2,  '"' + test_value2 + '"\r\n' );
      });
    },
 
@@ -336,7 +338,7 @@ module.exports = {
          db.get(test_key3, function (err, value) {
           
            if (err) { 
-             test.ok(true, "Key has been removed"); 
+             test.ok(true, 'Key has been removed'); 
              db.close();
              next();
            }
@@ -348,6 +350,7 @@ module.exports = {
        });
      });
    },
+   
    'delete a key': 
    function(test, next) {
 
@@ -377,33 +380,27 @@ module.exports = {
          db.get(test_key4, function (err, value) {
           
            if (err) { 
-             test.ok(true, "Key has been removed"); 
+             test.ok(true, 'Key has been removed'); 
              db.close();
              next();
            }
-           else {
-             //test.equals(test_value4, value);
-           }
-
          });
        });
      });
    },
-
+   
    'Start Multilevel Server' :
    function(test, next) {
     test.plan(1);
        
 	var svr = levelup(process.cwd() + '/test/fixtures/db-server')
+        
         tcpserver = net.createServer(function (con) {
            con.pipe(multilevel.server(svr)).pipe(con)
-       
-     }).listen(3000)
-    	   test.ok(svr, "server started" )
-           next();
-    // for the first test, create the database in case it does not exist.
-    //
-        
+        }).listen(3000)
+    	
+        test.ok(svr, 'server started' )
+        next();
    },
 
     'multilevel put to specific location (Verbose)': 
@@ -424,8 +421,7 @@ module.exports = {
 
      test_cp1.on('exit', function (data) {
 	
-     //	TODO: test.ok(false, "path params fail", "#TODO params need debugging");
-       test.equals(test_output1, OK, "Response Returned OK");
+       test.equals(test_output1, OK, 'Response Returned OK');
        var mcl = multilevel.client(); 
        var con = net.connect(3000);
        con.pipe(mcl.createRpcStream()).pipe(con)
@@ -433,7 +429,7 @@ module.exports = {
          mcl.get(test_key2, function (err, value) {
           
            if (err) { return test.fail(err); }
-           test.equals(test_value2, value, "Multilevel put value is present");
+           test.equals(test_value2, value, 'Multilevel put value is present');
            mcl.close();
            next();
          });
@@ -504,8 +500,7 @@ module.exports = {
 
      test_cp1.on('exit', function (data) {
 	
-     //	test.ok(false, "path params fail", "#TODO params need debugging");
-       test.equals(test_output1, OK, "Response Returned OK");
+       test.equals(test_output1, OK, 'Response Returned OK');
        var mcl = multilevel.client(); 
        var con = net.connect(3000);
        con.pipe(mcl.createRpcStream()).pipe(con)
@@ -513,7 +508,7 @@ module.exports = {
          mcl.get(test_key3, function (err, value) {
           
            if (err) { return test.fail(err); }
-           test.equals(test_value3, value, "Multilevel put value is present");
+           test.equals(test_value3, value, 'Multilevel put value is present');
            mcl.close();
            next();
          });
@@ -540,31 +535,13 @@ module.exports = {
      });
 
      test_cp.on('exit', function (data) {
-     test.equals(test_output4, OK);
-        
-      //Should test value but there seems to be an error with 
-       /*var mcl = multilevel.client(); 
-       var con = net.connect(3000);
-       con.pipe(mcl.createRpcStream()).pipe(con)
-        con.on('connect', function(){
-       
-         mcl.get(test_key3, function (err, value) {
-           if (err) { 
-		 test.ok(true, "Key has been removed"); 
-             	 mcl.close();
-                 next();	
-           } 
-           
-         });
-	});
-	*/
-       
+     	test.equals(test_output4, OK);
      });
    },
 
-"TearDown Server" : function(test, next) { test.plan(0); tcpserver.close(); next(); },
+'TearDown Server' : function(test, next) { test.plan(0); tcpserver.close(); next(); },
 
-"Create Stream Start End" : function( test, next ) { 
+'Create Stream Start End' : function( test, next ) { 
    
      test.plan(1);
 
@@ -587,7 +564,7 @@ module.exports = {
 
 },
 
-"Create Stream Limit" : function( test, next ) { 
+'Create Stream Limit' : function( test, next ) { 
    
      test.plan(1);
 

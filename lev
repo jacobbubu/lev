@@ -7,8 +7,8 @@ var readline = require('readline')
 
 var argv = require('optimist')
     .usage('\nUsage: lev /path/to/db (Relative paths allowed e.g. ./db)\nIf no options are supplied then a REPL is provided')
-    .check(function(){ if(process.argv.length == 2) return false }) 
-    .describe("c", 'Creates a database')
+    .check(function() { if(process.argv.length == 2) return false }) 
+    .describe('c', 'Creates a database')
     .alias('d', 'del')
     .describe('del', '[key] Remove the entity associated with the supplied key')
     .alias('g', 'get')
@@ -40,10 +40,10 @@ var reconnect = require('reconnect')
 
 var Sublevel = require('level-sublevel')
 var multilevel = require('multilevel')
-var deleteRange = require("level-delete-range")
+var deleteRange = require('level-delete-range')
 var level = require('level')
 
-var host = "127.0.0.1";
+var host = '127.0.0.1';
 var utils = require('./lib/utils')
 
 var db
@@ -51,7 +51,7 @@ var db
    
 
 try {
-  var settingsFile = utils.find('.lev');
+  var settingsFile = utils.find('.lev.json') || utils.find('.lev')
   var defaults = JSON.parse(fs.readFileSync(settingsFile)) || {}
   argv = deepmerge(argv, defaults)
 }
@@ -69,37 +69,33 @@ if (argv.encoding) {
 }
 
 
-if (argv.p){
-     
-     if(argv.port){
-	     argv["put"] = argv["p"]
-	     delete argv ["p"]
-	     argv["value"] = argv._[0] 
-	     argv._[0] = ''     
-     }else{
-     	argv["put"] = argv["p"]
-        delete argv ["p"]
-        argv["value"] = argv._[1] 
-        argv._[1] = ''
-     }	
+if (argv.p) {
+   if(argv.port) {
+      argv['put'] = argv['p']
+      delete argv ['p']
+      argv['value'] = argv._[0]
+      argv._[0] = ''     
+   }else{
+      argv['put'] = argv['p']
+      delete argv ['p']
+      argv['value'] = argv._[1] 
+      argv._[1] = ''
+   }	
 }
 
-var postConnect = function(){
+var postConnect = function() {
 
    db = Sublevel(db)
    
    var allCommands = ['get', 'delr', 'limit', 'keys', 'start', 'end' ] 
    var args = utils.filter(Object.keys(argv), allCommands.concat(Object.keys(db)))
  
-      db.on('EncodingError', function(a, b, c) {
-    console.log(a, b, c)
-   })
+   db.on('EncodingError', console.log)
 
-   db.on('error', function(a, b, c) {
-     console.log(a, b, c)
-   })
-   for(var arg in argv){
-         switch(arg){
+   db.on('error', console.log)
+
+   for(var arg in argv) {
+         switch(arg) {
                 case 'limit':
                 case 'start':
                 case 'end':
@@ -124,14 +120,13 @@ if (argv.port) {
     db = multilevel.client()
     var dbstm = db.createRpcStream()
     dbstm.pipe(stream).pipe(dbstm)
+    
     // If it is a put get or delete then close the process as soon as the data has returned.
     var isPRD = false; 
     
     //If it is a query then we need to flag createReadStream
-
-    for(var arg in argv){
-        //console.log(arg)
-         switch(arg){
+    for(var arg in argv) {
+         switch(arg) {
       		case 'put':
 		case 'get':
 		case 'del':
@@ -139,16 +134,17 @@ if (argv.port) {
  		   break
         }
     }
-    stream.on("data", function(data){ 
-        if(isPRD){
+    stream.on('data', function(data) { 
+        if(isPRD) {
 	//We are CLI so close after response
 	        process.exit()
 	}
     })
     
-    if(argv.host){
-     host = argv.host
+    (argv.host) {
+        host = argv.host
     }
+
     postConnect();
   }).listen(argv.port, host)
   
