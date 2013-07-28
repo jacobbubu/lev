@@ -46,26 +46,30 @@ lev ./db --cd greetings/en --get 'welcome'
 # CLI OPTIONS
 
 ```
-If no options are supplied then a REPL is provided to either the path or port specified
+Usage: lev /path/to/db (Relative paths allowed e.g. ./db)
+If no options are supplied then a REPL is provided
 
 Options:
   -c                  Creates a database                                                                                                                                   
-  --del, -d           Remove an entity                                                                                                                                     
-  --get, -g           Get an record based on the key                                                                                                                       
+  --del, -d           [key] Remove the entity associated with the supplied key                                                                                             
+  --get, -g           [key] Get an entity based on the key                                                                                                                 
   --put --value, -p   Put a value into the database
                       e.g $ lev /path/to/db --put key --value val
                       Or $ lev /path/to/db -p key val
-  --port              For connecting to a remote multilevel instance.
-                      Use as a single option for a REPL                                              
+  --port              [number] For connecting to a remote multilevel instance.
+                      Use as a single option for a REPL                                     
   --keys, -k          Only return keys                                                                                                                                     
-  --limit, -l         The number of entities to return                                                                                                                     
-  --start, -s         The starting key for a read                                                                                                                          
-  --end, -e           The end key 
+  --limit, -l         [number] The number of entities to return                                                                                                            
+  --start, -s         [key] The starting key for a read                                                                                                                    
+  --end, -e           [key] The end key                                                                                                                                    
+  --host, -h          [ipaddress] The address of the multilevel server. Defaults to 127.0.0.1
+  --cd                [path/to/sublevel] Specify a sublevel
+                      N.B. Cannot be used to create new sublevels on multiserver     
 ```
 
 For connecting to a [multilevel][1] enabled instance, specify the `port` parameter:
 
-`lev --port 1337 --keys ...`
+`lev --port 1337 --host 127.0.0.1 --keys ...`
 
 ## REPL
 Start the REPL by providing only a path or host and port

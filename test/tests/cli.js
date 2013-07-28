@@ -389,6 +389,7 @@ module.exports = {
        });
      });
    },
+
    'Start Multilevel Server' :
    function(test, next) {
     test.plan(1);
@@ -404,6 +405,7 @@ module.exports = {
     //
         
    },
+
     'multilevel put to specific location (Verbose)': 
    function(test, next) {
 
@@ -459,6 +461,29 @@ module.exports = {
        test.equals(test_output1,  '"' + test_value2  + '"\r\n');
      });
    },
+ 'multilevel get with host param': 
+   function(test, next) {
+
+     test.plan(1);
+
+     var args = ['--port', '3000', '-g', test_key2, '-h', '127.0.0.1'].concat(defaultargs);
+     var test_cp1 = spawn(lev, args);
+     var test_output1 = '';
+
+     test_cp1.stderr.on('data', function (data) {
+       test.fail(String(data));
+     });
+
+     test_cp1.stdout.on('data', function (data) {
+       test_output1 += data;
+     });
+
+     test_cp1.on('exit', function (data) {
+
+       test.equals(test_output1,  '"' + test_value2  + '"\r\n');
+     });
+   },
+
 
 
 'multilevel put to specific location': 

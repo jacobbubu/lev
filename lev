@@ -10,20 +10,23 @@ var argv = require('optimist')
     .check(function(){ if(process.argv.length == 2) return false }) 
     .describe("c", 'Creates a database')
     .alias('d', 'del')
-    .describe('del', 'Remove an entity')
+    .describe('del', '[key] Remove the entity associated with the supplied key')
     .alias('g', 'get')
-    .describe('get', 'Get an record based on the key')
+    .describe('get', '[key] Get an entity based on the key')
     
     .describe('put --value, -p ', 'Put a value into the database\n                      e.g $ lev /path/to/db --put key --value val\n                      Or $ lev /path/to/db -p key val')  
-    .describe('port', 'For connecting to a remote multilevel instance.\n                      Use as a single option for a REPL')
+    .describe('port', '[number] For connecting to a remote multilevel instance.\n                      Use as a single option for a REPL')
      .alias('k', 'keys')
     .describe('keys', 'Only return keys')	
     .alias('l', 'limit')
-    .describe('limit', 'The number of entities to return')
+    .describe('limit', '[number] The number of entities to return')
     .alias('s', 'start')
-    .describe('start', 'The starting key for a read')
+    .describe('start', '[key] The starting key for a read')
     .alias('e', 'end')
-    .describe('end', 'The end key')
+    .describe('end', '[key] The end key')
+    .alias('h', 'host')
+    .describe('host', '[ipaddress] The address of the multilevel server. Defaults to 127.0.0.1')
+    .describe('cd', '[path/to/sublevel] Specify a sublevel\n                      N.B. Cannot be used to create new sublevels on multiserver') 
    .argv
 
 /*TODO 
@@ -40,6 +43,7 @@ var multilevel = require('multilevel')
 var deleteRange = require("level-delete-range")
 var level = require('level')
 
+var host = "127.0.0.1";
 var utils = require('./lib/utils')
 
 var db
@@ -141,8 +145,12 @@ if (argv.port) {
 	        process.exit()
 	}
     })
+    
+    if(argv.host){
+     host = argv.host
+    }
     postConnect();
-  }).listen(argv.port)
+  }).listen(argv.port, host)
   
 }else {  
   
