@@ -1,23 +1,20 @@
 #!/usr/bin/env node
 
 var fs = require('fs')
-var path = require('path')
-var net = require('net')
-var readline = require('readline')
 
 var argv = require('optimist')
     .usage('\nUsage: lev /path/to/db (Relative paths allowed e.g. ./db)\nIf no options are supplied then a REPL is provided')
-    .check(function() { if(process.argv.length == 2) return false }) 
+    .check(function() { if(process.argv.length == 2) return false })
     .describe('c', 'Creates a database')
     .alias('d', 'del')
     .describe('del', '[key] Remove the entity associated with the supplied key')
     .alias('g', 'get')
     .describe('get', '[key] Get an entity based on the key')
     
-    .describe('put --value, -p ', 'Put a value into the database\n                      e.g $ lev /path/to/db --put key --value val\n                      Or $ lev /path/to/db -p key val')  
+    .describe('put --value, -p ', 'Put a value into the database\n                      e.g $ lev /path/to/db --put key --value val\n                      Or $ lev /path/to/db -p key val') 
     .describe('port', '[number] For connecting to a remote multilevel instance.\n                      Use as a single option for a REPL')
      .alias('k', 'keys')
-    .describe('keys', 'Only return keys')	
+    .describe('keys', 'Only return keys')
     .alias('l', 'limit')
     .describe('limit', '[number] The number of entities to return')
     .alias('s', 'start')
@@ -26,7 +23,7 @@ var argv = require('optimist')
     .describe('end', '[key] The end key')
     .alias('h', 'host')
     .describe('host', '[ipaddress] The address of the multilevel server. Defaults to 127.0.0.1')
-    .describe('cd', '[path/to/sublevel] Specify a sublevel\n                      N.B. Cannot be used to create new sublevels on multiserver') 
+    .describe('cd', '[path/to/sublevel] Specify a sublevel\n                      N.B. Cannot be used to create new sublevels on multiserver')
    .argv
 
 /*TODO 
@@ -40,7 +37,6 @@ var reconnect = require('reconnect')
 
 var Sublevel = require('level-sublevel')
 var multilevel = require('multilevel')
-var deleteRange = require('level-delete-range')
 var level = require('level')
 
 var host = '127.0.0.1';
@@ -74,20 +70,20 @@ if (argv.p) {
       argv['put'] = argv['p']
       delete argv ['p']
       argv['value'] = argv._[0]
-      argv._[0] = ''     
+      argv._[0] = ''
    }else{
       argv['put'] = argv['p']
       delete argv ['p']
-      argv['value'] = argv._[1] 
+      argv['value'] = argv._[1]
       argv._[1] = ''
-   }	
+   }
 }
 
 var postConnect = function() {
 
    db = Sublevel(db)
    
-   var allCommands = ['get', 'delr', 'limit', 'keys', 'start', 'end' ] 
+   var allCommands = ['get', 'delr', 'limit', 'keys', 'start', 'end' ]
    var args = utils.filter(Object.keys(argv), allCommands.concat(Object.keys(db)))
  
    db.on('EncodingError', console.log)
@@ -109,8 +105,8 @@ var postConnect = function() {
         
     }
  
-   args.length > 0 
-     ? require('./lib/cli')(argv, db) 
+   args.length > 0
+     ? require('./lib/cli')(argv, db)
      : require('./lib/repl')(argv, db)
 }
 
@@ -122,23 +118,23 @@ if (argv.port) {
     dbstm.pipe(stream).pipe(dbstm)
     
     // If it is a put get or delete then close the process as soon as the data has returned.
-    var isPRD = false; 
+    var isPRD = false;
     
     //If it is a query then we need to flag createReadStream
     for(var arg in argv) {
-         switch(arg) {
-      		case 'put':
-		case 'get':
-		case 'del':
-		   isPRD = true
- 		   break
+       switch(arg) {
+          case 'put':
+          case 'get':
+          case 'del':
+             isPRD = true
+             break
         }
     }
-    stream.on('data', function(data) { 
-        if(isPRD) {
+    stream.on('data', function() {
+       if(isPRD) {
 	//We are CLI so close after response
-	        process.exit()
-	}
+          process.exit()
+       }
     })
     
     if(argv.host) {
@@ -148,7 +144,7 @@ if (argv.port) {
     postConnect();
   }).listen(argv.port, host)
   
-}else {  
+}else {
   
    
    db = level(utils.location(), argv)
