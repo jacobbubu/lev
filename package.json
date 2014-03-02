@@ -16,7 +16,8 @@
     "tabulate": "0.0.1",
     "config-chain": "~1.1.7",
     "level-subtree": "~1.1.1",
-    "archy": "0.0.2"
+    "archy": "0.0.2",
+    "bytewise": "~0.7.0"
   },
   "devDependencies": {
     "tap": "0.4.3",

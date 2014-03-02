@@ -1,3 +1,14 @@
+This fork supports `bytewise/hex` encoding for keyEncoding and valueEncoding.
+
+just put folowwing lines into `.lev` for setting:
+
+```
+{
+  "keyEncoding": "bytewise",
+  "valueEncoding": "bytewise"
+}
+```
+
 # SYNOPSIS
 Commandline [LevelDB][0] management.
 
